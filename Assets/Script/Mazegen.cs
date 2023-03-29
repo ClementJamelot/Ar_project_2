@@ -19,6 +19,13 @@ public class Mazegen : MonoBehaviour
     public bool generatePillarMaze = false;
     public float scale = 5;
 
+    public GameObject sol;
+    public float position_x_min;
+    public float position_x_max;
+
+    public float position_y_min;
+    public float position_y_max;
+
     int rand(int size){
         return (int) Random.Range(0.0f, (float)size - 0.001f);
     }
@@ -152,6 +159,8 @@ public class Mazegen : MonoBehaviour
                 }
             }
         }
+        
+
     }
 
     void instantiatePillarMaze(){
@@ -184,6 +193,11 @@ public class Mazegen : MonoBehaviour
         AldousBroder();
         if(generateWallMaze) instantiateWallMaze();
         if(generatePillarMaze) instantiatePillarMaze();
+        float milieu= (scale * size -(scale/2) -1f)/2;
+        
+        Instantiate(sol, new Vector3(milieu,0,milieu),Quaternion.identity);
+        GameObject.Find("Sol(Clone)").transform.localScale= new Vector3(scale*size/10,1,scale*size/10);
+        
     }
 
 }
