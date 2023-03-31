@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 
 public class Mazegen : MonoBehaviour
@@ -19,12 +20,15 @@ public class Mazegen : MonoBehaviour
     public bool generatePillarMaze = false;
     public float scale = 5;
 
-    public GameObject sol;
-    public float position_x_min;
-    public float position_x_max;
+    private int nb_objectif;
 
-    public float position_y_min;
-    public float position_y_max;
+    private int objectif_place =0;
+
+    [SerializeField] private GameObject sol;
+    [SerializeField] private GameObject StartCanvas;
+    [SerializeField] private GameObject Objectectif;
+
+    public float pourcentage;
 
     int rand(int size){
         return (int) Random.Range(0.0f, (float)size - 0.001f);
@@ -157,6 +161,28 @@ public class Mazegen : MonoBehaviour
                     prefab.transform.localScale = new Vector3(scale/2, scale/3, scale);
                     prefab.name = "vwall_{" + i.ToString() + "," + j.ToString()+"}";
                 }
+                if (!hwalls[i,j]  && i < size)
+                {
+                    if(nb_objectif>objectif_place)
+                    {
+                        if(Random.Range(-10f,10.0f)>pourcentage)
+                        {
+                            Instantiate(Objectectif, new Vector3(i*scale,0,j*scale-scale/2),Quaternion.identity);
+                            objectif_place=objectif_place+1;
+                        }
+                    }
+                }
+                if (!vwalls[i,j]  && j < size)
+                {
+                    if(nb_objectif>objectif_place)
+                    {
+                        if(Random.Range(-10f,10.0f)>pourcentage)
+                        {
+                            Instantiate(Objectectif, new Vector3(i*scale-scale/2,0,j*scale),Quaternion.identity);
+                            objectif_place=objectif_place+1;
+                        }
+                    }
+                }
             }
         }
         
@@ -185,6 +211,18 @@ public class Mazegen : MonoBehaviour
     }
 
     void Start(){
+        
+        
+        Debug.Log(GameObject.Find("Objectif_Label").GetComponent<TextMeshProUGUI>().text);
+        Debug.Log(GameObject.Find("Taille_Label").GetComponent<TextMeshProUGUI>().text);
+        size=int.Parse(GameObject.Find("Taille_Label").GetComponent<TextMeshProUGUI>().text);
+        nb_objectif=int.Parse(GameObject.Find("Objectif_Label").GetComponent<TextMeshProUGUI>().text);
+        GameObject.Find("StartCanvas").SetActive(false);
+        Instantiate(StartCanvas);
+
+        pourcentage = size * nb_objectif * 0.2f;
+        
+
         visited = new bool[size,size];
         hwalls = new bool[size+1,size+1];
         vwalls = new bool[size+1,size+1];

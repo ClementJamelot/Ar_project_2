@@ -4,21 +4,9 @@ using UnityEngine;
 
 public class TurnLeft : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnTurn()
     {
-        
-        this.transform.rotation = Quaternion.Euler(0,-90+this.transform.eulerAngles.y,0);
+        GameObject.Find("Lily habillée v3(Clone)").transform.rotation = Quaternion.Euler(0,-90+GameObject.Find("Lily habillée v3(Clone)").transform.eulerAngles.y,0);
     }
 }

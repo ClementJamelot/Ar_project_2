@@ -19,6 +19,6 @@ public class TurnRight : MonoBehaviour
     public void OnTurn()
     {
         
-        this.transform.rotation = Quaternion.Euler(0,90+this.transform.eulerAngles.y,0);
+        GameObject.Find("Lily habillée v3(Clone)").transform.rotation = Quaternion.Euler(0,90+GameObject.Find("Lily habillée v3(Clone)").transform.eulerAngles.y,0);
     }
 }
