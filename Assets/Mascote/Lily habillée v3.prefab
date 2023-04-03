@@ -929,7 +929,7 @@ GameObject:
   - component: {fileID: 7564768495338269479}
   m_Layer: 0
   m_Name: "Lily habill\xE9e v3"
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -986,6 +986,8 @@ MonoBehaviour:
     type: 3}
   Objectectif: {fileID: 5618988624893631847, guid: 21c3a007306f35c4c951234154c1fea5,
     type: 3}
+  test: 0
+  pourcentage: 0
 --- !u!114 &7564768495338269472
 MonoBehaviour:
   m_ObjectHideFlags: 0

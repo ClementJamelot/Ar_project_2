@@ -35,7 +35,8 @@ void Update()
     //Bouton non presser alors mouvment immobile 
     if(buttonPressed == true)
     {  
-        lily.transform.Translate(Vector3.forward * Time.deltaTime * speed);
+        
+        GameObject.Find("Lily habillée v3(Clone)").transform.Translate(Vector3.forward * Time.deltaTime * speed);
     }
 }
 }

@@ -28,7 +28,9 @@ public class Mazegen : MonoBehaviour
     [SerializeField] private GameObject StartCanvas;
     [SerializeField] private GameObject Objectectif;
 
-    public float pourcentage;
+    public int test=0;
+
+    public double pourcentage;
 
     int rand(int size){
         return (int) Random.Range(0.0f, (float)size - 0.001f);
@@ -92,6 +94,7 @@ public class Mazegen : MonoBehaviour
     }
 
     void removeWall(int[] p1, int[] p2){
+        
         int dx = p2[0] - p1[0];
         int dy = p2[1] - p1[1];
         if(dx == -1){
@@ -121,14 +124,17 @@ public class Mazegen : MonoBehaviour
     }
 
     void AldousBroder(){
+        
         // start by picking a random cell.
         // int[] p = {rand(size), rand(size)};
         int[] p = {0,0};
         visit(p);
 
         while(unvisited < size*size){
+            
             var next = pickNeighbor(p);
             if(!isvisited(next)){
+                
                 visit(next);
                 removeWall(p, next);
             }
@@ -155,30 +161,36 @@ public class Mazegen : MonoBehaviour
                     var prefab = Instantiate(wall, new Vector3(i*scale, 0, j*scale-scale/2), Quaternion.identity);
                     prefab.transform.localScale = new Vector3(scale, scale/3, scale/2);
                     prefab.name = "hwall_{" + i.ToString() + "," + j.ToString()+"}";
+                    prefab.transform.parent = GameObject.Find("Labyinthe").transform;
                 }
                 if( vwalls[i,j] && j < size ){
                     var prefab = Instantiate(wall, new Vector3(i*scale-scale/2, 0, j*scale), Quaternion.identity);
                     prefab.transform.localScale = new Vector3(scale/2, scale/3, scale);
                     prefab.name = "vwall_{" + i.ToString() + "," + j.ToString()+"}";
+                    prefab.transform.parent = GameObject.Find("Labyinthe").transform;
                 }
                 if (!hwalls[i,j]  && i < size)
                 {
+                    test=test+1;
                     if(nb_objectif>objectif_place)
                     {
-                        if(Random.Range(-10f,10.0f)>pourcentage)
+                        if(Random.Range(0f,1.0f)<pourcentage)
                         {
-                            Instantiate(Objectectif, new Vector3(i*scale,0,j*scale-scale/2),Quaternion.identity);
+                            var bloc = Instantiate(Objectectif, new Vector3(i*scale,0,j*scale-scale/2),Quaternion.identity);
+                            bloc.transform.parent = GameObject.Find("Labyinthe").transform;
                             objectif_place=objectif_place+1;
                         }
                     }
                 }
                 if (!vwalls[i,j]  && j < size)
                 {
+                    test=test+1;
                     if(nb_objectif>objectif_place)
                     {
-                        if(Random.Range(-10f,10.0f)>pourcentage)
+                        if(Random.Range(0f,1.0f)<pourcentage)
                         {
-                            Instantiate(Objectectif, new Vector3(i*scale-scale/2,0,j*scale),Quaternion.identity);
+                            var bloc =Instantiate(Objectectif, new Vector3(i*scale-scale/2,0,j*scale),Quaternion.identity);
+                            bloc.transform.parent = GameObject.Find("Labyinthe").transform;
                             objectif_place=objectif_place+1;
                         }
                     }
@@ -211,30 +223,91 @@ public class Mazegen : MonoBehaviour
     }
 
     void Start(){
-        
-        
-        Debug.Log(GameObject.Find("Objectif_Label").GetComponent<TextMeshProUGUI>().text);
-        Debug.Log(GameObject.Find("Taille_Label").GetComponent<TextMeshProUGUI>().text);
         size=int.Parse(GameObject.Find("Taille_Label").GetComponent<TextMeshProUGUI>().text);
         nb_objectif=int.Parse(GameObject.Find("Objectif_Label").GetComponent<TextMeshProUGUI>().text);
+
+        switch (size)
+        {
+            case (5):
+                pourcentage = (float)nb_objectif/24;
+            break;
+            case (6):
+                pourcentage = (float)nb_objectif/35;
+            break;
+            case (7):
+                pourcentage = (float)nb_objectif/48;
+            break;
+            case (8):
+                pourcentage = (float)nb_objectif/63;
+            break;
+            case (9):
+                pourcentage = (float)nb_objectif/80;
+            break;
+            case (10):
+                pourcentage = (float)nb_objectif/99;
+            break;
+            case (11):
+                pourcentage = (float)nb_objectif/120;
+            break;
+            case (12):
+                pourcentage = (float)nb_objectif/143;
+            break;
+            case (13):
+                pourcentage = (float)nb_objectif/168;
+            break;
+            case (14):
+                pourcentage = (float)nb_objectif/195;
+            break;
+            case (15):
+                pourcentage = (float)nb_objectif/224;
+            break;
+
+            default:
+            break;
+        }
+
+
+
+
         GameObject.Find("StartCanvas").SetActive(false);
         Instantiate(StartCanvas);
-
-        pourcentage = size * nb_objectif * 0.2f;
+        GameObject.Find("Total").GetComponent<TextMeshProUGUI>().text = nb_objectif.ToString();
+        float milieu= (scale * size -(scale/2) -1f)/2;
+        Instantiate(sol, new Vector3(milieu,0,milieu),Quaternion.identity);
+        
+        GameObject.Find("Sol(Clone)").transform.localScale= new Vector3(scale*size/10,1,scale*size/10);
+        
+        do
+        {
+            foreach (Transform child in GameObject.Find("Labyinthe").transform) {
+                GameObject.Destroy(child.gameObject);
+            }
+            unvisited =0;
+            objectif_place=0;
+            Creation();
+            
+        }
+        while(objectif_place!=nb_objectif);
         
 
+        
+    }
+
+    void Creation()
+    {
+        
+
+        
         visited = new bool[size,size];
         hwalls = new bool[size+1,size+1];
         vwalls = new bool[size+1,size+1];
         fill(hwalls, true);
         fill(vwalls, true);
+        Debug.Log("Etape 1");
         AldousBroder();
-        if(generateWallMaze) instantiateWallMaze();
-        if(generatePillarMaze) instantiatePillarMaze();
-        float milieu= (scale * size -(scale/2) -1f)/2;
+        Debug.Log("Etape 2");
+        instantiateWallMaze();
         
-        Instantiate(sol, new Vector3(milieu,0,milieu),Quaternion.identity);
-        GameObject.Find("Sol(Clone)").transform.localScale= new Vector3(scale*size/10,1,scale*size/10);
         
     }
 
